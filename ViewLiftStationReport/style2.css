@@ -1,0 +1,136 @@
+* {
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+}
+
+body {
+    background: #e2e1e0;
+    text-align: center;
+    margin: 0px;
+}
+
+#toolbar {
+    background-color: #2979FF;
+    position: fixed;
+    left: 0;
+    width: 100%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    text-align: left;
+    padding: 12px;
+    margin: 0px;
+}
+
+#toolbar-title {
+    vertical-align: middle;
+    color: white;
+    letter-spacing: 1px;
+    font-size: 20px;
+}
+
+#holder {
+    padding: 86px 24px 24px 24px;
+}
+
+.card {
+    background: #fff;
+    border-radius: 2px;
+    margin: 1rem auto;
+    margin-bottom: 24px;
+    border: 1px lightgray solid;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    padding: 16px;
+    text-align: left;
+    max-width: 1150px;
+    width: 95%;
+}
+
+table {
+    border-collapse: collapse;
+    margin: 36px 12px 36px 12px;
+    /*display: inline-table;*/
+    word-wrap: break-word;
+}
+
+.table-title {
+    font-size: 24px;
+}
+
+.diagram {
+    padding-top: 24px;
+    padding-bottom: 24px;
+    padding-right: 8px;
+}
+
+
+
+
+tr {
+    border-bottom: 1px lightgray solid;
+}
+
+td {
+    padding: 16px;
+    text-align: left;
+    font-size: 14px;
+}
+
+th {
+    padding: 16px;
+    text-align: left;
+    font-size: 14px;
+}
+
+.th-center {
+    text-align: center;
+}
+
+#table-equipment td {
+    padding-right: 24px;
+}
+
+#fab {
+    background-color: #F44336;
+    width: 60px;
+    height: 60px;
+    border-radius: 100%;
+    background: #F44336;
+    border: none;
+    outline: none;
+    color: #FFF;
+    font-size: 36px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin-right: 16px;
+    margin-bottom: 16px;
+}
+
+#fab:hover {
+    background: #EF5350;
+    cursor: pointer;
+}
+
+.fa-print {
+    /*font-size: 24pt;*/
+}
+
+#approvedby {
+    max-width: 1000px; 
+    /*margin: 0 auto; */
+    text-align: left;
+    padding-left: 24px;
+}
+
+#error {
+    font-size: 20px;
+    color: red;
+    padding-top: 86px;
+}
+
+.active {
+    display: block;
+}
+
+.inactive {
+    display: none;
+}

@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Control Panel Worksheet</title>
+    <!-- force no compatibility mode in IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="utf-8" />
+    <!-- Vue -->
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <!-- JQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <!-- google icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Product+Sans:400,400i,700,700i' rel='stylesheet' type='text/css'>
+    <!--Bootstrap-->
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" /> -->
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> -->
+    <!-- style -->
+    <link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+    <link rel="stylesheet" type="text/css" media="print" href="print.css" />
+    <!-- mobile friendly -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <div id="bigHolder">
+        <div id="toolbar">
+            <div style="display: inline-block;" id="toolbar-title">
+                Control Panel Worksheet&nbsp;&nbsp;&nbsp;
+            </div>
+            <form style="display: inline-block;">
+                <select id="monthSelect" v-model="mSelect">
+                    <option class="opts" v-for="month in months" :value="month.index" :selected="month.selected">{{ month.name }}</option>
+                </select>
+                <select id="yearSelect" v-model="ySelect">
+                    <option class="opts" v-for="year in years" :value="year.index" :selected="year.selected">{{ year.year }}</option>
+                </select>
+            </form>
+            <button id="fab3" style="display: inline-block;" v-on:click="search"><i class="material-icons">search</i></button>
+            <button id="download-csv" class="downloadBtn" style="display: inline-block;" v-on:click="exportTableToCSV('daily_rounds_sheet.csv')">Download Excel File</button>
+            <button id="fab2"><i class="material-icons">keyboard_arrow_up</i></button>
+
+        </div>
+        <div id="holder" class="active">
+            <div id="error" v-bind:class="{ active: error }">No records found for this month.</div>
+            <div id="loader" v-bind:class="{ active: isLoading }"></div>
+            <div id="card" class="card" v-bind:class="{ active: isLoaded }">
+                <table id="links-table">
+                    <tr>
+                        <th class="table-title" colspan="4">Direct Links</th>
+                    </tr>
+                    <tr>
+                        <td><a class="link-td" href="#inf-anchor">Influent table</a></td>
+                        <td><a class="link-td" href="#ras-anchor">Return Table</a></td>
+                        <td><a class="link-td" href="#was-anchor">Waste Table</a></td>
+                    </tr>
+                </table>
+                <table id="main-tbl" class="table">
+                    <thead>
+                        <tr>
+                            <th class="table-title toggler" colspan="13" v-on:click="hideBody(0)">
+                                Main Table
+                                <button id="collapse-btn"><i v-bind:class="{ 'fa fa-compress': icons[0].c, 'fa fa-expand': icons[0].e  }" aria-hidden="true"></i></button>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tr>
+                    	<th rowspan="3">Day</th>
+                        <th rowspan="2">Total Influent
+                            <br>x1000</th>
+                        <th rowspan="2">Prairie Creek
+                            <br>x1000</th>
+                        <th rowspan="2">Timber Creek
+                            <br>x1000</th>
+                    	<th colspan="2">{{ tops.TotalEffluent_top }}</th>
+                    	<th rowspan="3">2-Hour
+                            <br>Peak Flow
+                            <br>x1000</th>
+                        <th rowspan="3">Time</th>
+                    	<th colspan="2">{{ tops.HeadPlant_top }}</th>
+                    	<th rowspan="3">Rainfall
+                            <br>(inches)</th>
+                        <th rowspan="3">Operator
+                            <br>Initials</th>
+                    </tr>
+                    <tr>
+                        
+                        <th colspan="2">Total Effluent
+                            <br>x1000</th>
+                        
+                        <th colspan="2">Head of Plant</th>
+                        
+                    </tr>
+                    <tr class="b-div">
+                        <th class="sub-th">Flow</th>
+                        <th class="sub-th">Flow</th>
+                        <th class="sub-th">Flow</th>
+                        <th class="sub-th">Reading</th>
+                        <th class="sub-th">Flow</th>
+                        <th class="sub-th">Reading</th>
+                        <th class="sub-th">Flow</th>
+                    </tr>
+                    <tbody v-bind:class="{ collapse: collapse[0] }">
+                        <tr v-for="day in days" class="hl-row">
+                            <td>{{ day.Day }}</td>
+                            <td>{{ day.TotalInfluent }}</td>
+                            <td>{{ day.PrairieCreek }}</td>
+                            <td>{{ day.TimberCreek }}</td>
+                            <td>{{ day.TotalEffluent_r }}</td>
+                            <td>{{ day.TotalEffluent_f }}</td>
+                            <td>{{ day.PeakFlow }}</td>
+                            <td>{{ day.Time }}</td>
+                            <td>{{ day.HeadPlant_r }}</td>
+                            <td>{{ day.HeadPlant_f }}</td>
+                            <td>{{ day.Rainfall }}</td>
+                            <td>{{ day.Operator }}</td>
+                        </tr>
+                    </tbody>
+                    <tr class="t-div hl-row">
+                        <th>Tot.</th>
+                        <td>{{ sums['TotalInfluent'] }}</td>
+                        <td>{{ sums['PrairieCreek'] }}</td>
+                        <td>{{ sums['TimberCreek'] }}</td>
+                        <td>{{ sums['TotalEffluent_r'] }}</td>
+                        <td>{{ sums['TotalEffluent_f'] }}</td>
+                        <td>{{ sums['PeakFlow'] }}</td>
+                        <td></td>
+                        <td>{{ sums['HeadPlant_r'] }}</td>
+                        <td>{{ sums['HeadPlant_f'] }}</td>
+                        <td>{{ sums['Rainfall'] }}</td>
+                        <td></td>
+                    </tr>
+                    <tr class="hl-row">
+                        <th>Avg.</th>
+                        <td>{{ avgs['TotalInfluent'] }}</td>
+                        <td>{{ avgs['PrairieCreek'] }}</td>
+                        <td>{{ avgs['TimberCreek'] }}</td>
+                        <td>{{ avgs['TotalEffluent_r'] }}</td>
+                        <td>{{ avgs['TotalEffluent_f'] }}</td>
+                        <td>{{ avgs['PeakFlow'] }}</td>
+                        <td></td>
+                        <td>{{ avgs['HeadPlant_r'] }}</td>
+                        <td>{{ avgs['HeadPlant_f'] }}</td>
+                        <td>{{ avgs['Rainfall'] }}</td>
+                        <td></td>
+                    </tr>
+                    <tr class="hl-row">
+                        <th>Max</th>
+                        <td>{{ max['TotalInfluent'] }}</td>
+                        <td>{{ max['PrairieCreek'] }}</td>
+                        <td>{{ max['TimberCreek'] }}</td>
+                        <td>{{ max['TotalEffluent_r'] }}</td>
+                        <td>{{ max['TotalEffluent_f'] }}</td>
+                        <td>{{ max['PeakFlow'] }}</td>
+                        <td></td>
+                        <td>{{ max['HeadPlant_r'] }}</td>
+                        <td>{{ max['HeadPlant_f'] }}</td>
+                        <td>{{ max['Rainfall'] }}</td>
+                        <td></td>
+                    </tr>
+                    <tr class="hl-row">
+                        <th>Min</th>
+                        <td>{{ min['TotalInfluent'] }}</td>
+                        <td>{{ min['PrairieCreek'] }}</td>
+                        <td>{{ min['TimberCreek'] }}</td>
+                        <td>{{ min['TotalEffluent_r'] }}</td>
+                        <td>{{ min['TotalEffluent_f'] }}</td>
+                        <td>{{ min['PeakFlow'] }}</td>
+                        <td></td>
+                        <td>{{ min['HeadPlant_r'] }}</td>
+                        <td>{{ min['HeadPlant_f'] }}</td>
+                        <td>{{ min['Rainfall'] }}</td>
+                        <td></td>
+                    </tr>
+                    
+                </table>
+                <a class="anchor" id="inf-anchor"></a>
+                <table id="inf-tbl" class="table">
+                    <thead>
+                        <tr>
+                            <th class="table-title toggler" colspan="9" v-on:click="hideBody(1)">
+                                Influent Table
+                                <button id="collapse-btn"><i v-bind:class="{ 'fa fa-compress': icons[1].c, 'fa fa-expand': icons[1].e  }" aria-hidden="true"></i></button>
+                            </th>
+                    </thead>
+                    <tr>
+                    	<th rowspan="3">Day</th>
+                    	<th colspan="2">{{ tops.INF2T1_top }}</th>
+                    	<th colspan="2">{{ tops.INF2T2_top }}</th>
+                    	<th colspan="2">{{ tops.INF2T3_top }}</th>
+                    	<th colspan="2">{{ tops.INF3_top }}</th>
+                    </tr>
+                    <tr>
+                        <th colspan="2">Plant 2T1 INF.
+                            <br>x1000</th>
+                        <th colspan="2">Plant 2T2 INF.
+                            <br>x1000</th>
+                        <th colspan="2">Plant 2T3 INF.
+                            <br>x1000</th>
+                        <th colspan="2">Plant 3 INF.
+                            <br>x1000</th>
+                    </tr>
+                    <tr class="b-div">
+                        <th class="sub-th">Reading</th>
+                        <th class="sub-th">Flow</th>
+                        <th class="sub-th">Reading</th>
+                        <th class="sub-th">Flow</th>
+                        <th class="sub-th">Reading</th>
+                        <th class="sub-th">Flow</th>
+                        <th class="sub-th">Reading</th>
+                        <th class="sub-th">Flow</th>
+                    </tr>
+                    <tbody v-bind:class="{ collapse: collapse[1] }">
+                        <tr v-for="day in days" class="hl-row">
+                            <td>{{ day.Day }}</td>
+                            <td>{{ day.INF2T1_r }}</td>
+                            <td>{{ day.INF2T1_f }}</td>
+                            <td>{{ day.INF2T2_r }}</td>
+                            <td>{{ day.INF2T2_f }}</td>
+                            <td>{{ day.INF2T3_r }}</td>
+                            <td>{{ day.INF2T3_f }}</td>
+                            <td>{{ day.INF3_r }}</td>
+                            <td>{{ day.INF3_f }}</td>
+                        </tr>
+                    </tbody>
+                    <tr class="t-div hl-row">
+                        <th>Tot.</th>
+                        <td>{{ sums['INF2T1_r'] }}</td>
+                        <td>{{ sums['INF2T1_f'] }}</td>
+                        <td>{{ sums['INF2T2_r'] }}</td>
+                        <td>{{ sums['INF2T2_f'] }}</td>
+                        <td>{{ sums['INF2T3_r'] }}</td>
+                        <td>{{ sums['INF2T3_f'] }}</td>
+                        <td>{{ sums['INF3_r'] }}</td>
+                        <td>{{ sums['INF3_f'] }}</td>
+                    </tr>
+                    <tr class="hl-row">
+                        <th>Avg.</th>
+                        <td>{{ avgs['INF2T1_r'] }}</td>
+                        <td>{{ avgs['INF2T1_f'] }}</td>
+                        <td>{{ avgs['INF2T2_r'] }}</td>
+                        <td>{{ avgs['INF2T2_f'] }}</td>
+                        <td>{{ avgs['INF2T3_r'] }}</td>
+                        <td>{{ avgs['INF2T3_f'] }}</td>
+                        <td>{{ avgs['INF3_r'] }}</td>
+                        <td>{{ avgs['INF3_f'] }}</td>
+                    </tr>
+                    <tr class="hl-row">
+                        <th>Max</th>
+                        <td>{{ max['INF2T1_r'] }}</td>
+                        <td>{{ max['INF2T1_f'] }}</td>
+                        <td>{{ max['INF2T2_r'] }}</td>
+                        <td>{{ max['INF2T2_f'] }}</td>
+                        <td>{{ max['INF2T3_r'] }}</td>
+                        <td>{{ max['INF2T3_f'] }}</td>
+                        <td>{{ max['INF3_r'] }}</td>
+                        <td>{{ max['INF3_f'] }}</td>
+                    </tr>
+                    <tr class="hl-row">
+                        <th>Min</th>
+                        <td>{{ min['INF2T1_r'] }}</td>
+                        <td>{{ min['INF2T1_f'] }}</td>
+                        <td>{{ min['INF2T2_r'] }}</td>
+                        <td>{{ min['INF2T2_f'] }}</td>
+                        <td>{{ min['INF2T3_r'] }}</td>
+                        <td>{{ min['INF2T3_f'] }}</td>
+                        <td>{{ min['INF3_r'] }}</td>
+                        <td>{{ min['INF3_f'] }}</td>
+                    </tr>
+                </table>
+                <a class="anchor" id="ras-anchor"></a>
+                <table id="ras-tbl" class="table">
+                    <thead>
+                        <tr>
+                            <th class="table-title toggler" colspan="13" v-on:click="hideBody(2)">
+                                Return Table
+                                <button id="collapse-btn"><i v-bind:class="{ 'fa fa-compress': icons[2].c, 'fa fa-expand': icons[2].e  }" aria-hidden="true"></i></button>
+                            </th>
+                    </thead>
+                    <tr>
+                    	<th rowspan="3">Day</th>
+                    	<th colspan="2">{{ tops.RAS1_top }}</th>
+                    	<th colspan="2">{{ tops.RAS2T1_top }}</th>
+                    	<th colspan="2">{{ tops.RAS2T2_top }}</th>
+                    	<th colspan="2">{{ tops.RAS2T3_top }}</th>
+                    	<th colspan="2">{{ tops.RAS2T4_top }}</th>
+                    	<th colspan="2">{{ tops.RAS3_top }}</th>
+                    </tr>
+                    <tr>
+                        <th colspan="2">Plant 1 RAS.
+                            <br>x1000</th>
+                        <th colspan="2">Plant 2T1 RAS.
+                            <br>x1000</th>
+                        <th colspan="2">Plant 2T2 RAS.
+                            <br>x1000</th>
+                        <th colspan="2">Plant 2T3 RAS.
+                            <br>x1000</th>
+                        <th colspan="2">Plant 2T4 RAS.
+                            <br>x1000</th>
+                        <th colspan="2">Plant 3 RAS.
+                            <br>x1000</th>
+                    </tr>
+                    <tr class="b-div">
+                        <th class="sub-th">Reading</th>
+                        <th class="sub-th">Flow</th>
+                        <th class="sub-th">Reading</th>
+                        <th class="sub-th">Flow</th>
+                        <th class="sub-th">Reading</th>
+                        <th class="sub-th">Flow</th>
+                        <th class="sub-th">Reading</th>
+                        <th class="sub-th">Flow</th>
+                        <th class="sub-th">Reading</th>
+                        <th class="sub-th">Flow</th>
+                        <th class="sub-th">Reading</th>
+                        <th class="sub-th">Flow</th>
+                    </tr>
+                    <tbody v-bind:class="{ collapse: collapse[2] }">
+                        <tr v-for="day in days" class="hl-row">
+                            <td>{{ day.Day }}</td>
+                            <td>{{ day.RAS1_r }}</td>
+                            <td>{{ day.RAS1_f }}</td>
+                            <td>{{ day.RAS2T1_r }}</td>
+                            <td>{{ day.RAS2T1_f }}</td>
+                            <td>{{ day.RAS2T2_r }}</td>
+                            <td>{{ day.RAS2T2_f }}</td>
+                            <td>{{ day.RAS2T3_r }}</td>
+                            <td>{{ day.RAS2T3_f }}</td>
+                            <td>{{ day.RAS2T4_r }}</td>
+                            <td>{{ day.RAS2T4_f }}</td>
+                            <td>{{ day.RAS3_r }}</td>
+                            <td>{{ day.RAS3_f }}</td>
+                        </tr>
+                    </tbody>
+                    <tr class="t-div hl-row">
+                        <th>Tot.</th>
+                        <td>{{ sums['RAS1_r'] }}</td>
+                        <td>{{ sums['RAS1_f'] }}</td>
+                        <td>{{ sums['RAS2T1_r'] }}</td>
+                        <td>{{ sums['RAS2T1_f'] }}</td>
+                        <td>{{ sums['RAS2T2_r'] }}</td>
+                        <td>{{ sums['RAS2T2_f'] }}</td>
+                        <td>{{ sums['RAS2T3_r'] }}</td>
+                        <td>{{ sums['RAS2T3_f'] }}</td>
+                        <td>{{ sums['RAS2T4_r'] }}</td>
+                        <td>{{ sums['RAS2T4_f'] }}</td>
+                        <td>{{ sums['RAS3_r'] }}</td>
+                        <td>{{ sums['RAS3_f'] }}</td>
+                    </tr>
+                    <tr class="hl-row">
+                        <th>Avg.</th>
+                        <td>{{ avgs['RAS1_r'] }}</td>
+                        <td>{{ avgs['RAS1_f'] }}</td>
+                        <td>{{ avgs['RAS2T1_r'] }}</td>
+                        <td>{{ avgs['RAS2T1_f'] }}</td>
+                        <td>{{ avgs['RAS2T2_r'] }}</td>
+                        <td>{{ avgs['RAS2T2_f'] }}</td>
+                        <td>{{ avgs['RAS2T3_r'] }}</td>
+                        <td>{{ avgs['RAS2T3_f'] }}</td>
+                        <td>{{ avgs['RAS2T4_r'] }}</td>
+                        <td>{{ avgs['RAS2T4_f'] }}</td>
+                        <td>{{ avgs['RAS3_r'] }}</td>
+                        <td>{{ avgs['RAS3_f'] }}</td>
+                    </tr>
+                    <tr class="hl-row">
+                        <th>Max</th>
+                        <td>{{ max['RAS1_r'] }}</td>
+                        <td>{{ max['RAS1_f'] }}</td>
+                        <td>{{ max['RAS2T1_r'] }}</td>
+                        <td>{{ max['RAS2T1_f'] }}</td>
+                        <td>{{ max['RAS2T2_r'] }}</td>
+                        <td>{{ max['RAS2T2_f'] }}</td>
+                        <td>{{ max['RAS2T3_r'] }}</td>
+                        <td>{{ max['RAS2T3_f'] }}</td>
+                        <td>{{ max['RAS2T4_r'] }}</td>
+                        <td>{{ max['RAS2T4_f'] }}</td>
+                        <td>{{ max['RAS3_r'] }}</td>
+                        <td>{{ max['RAS3_f'] }}</td>
+                    </tr>
+                    <tr class="hl-row">
+                        <th>Min</th>
+                        <td>{{ min['RAS1_r'] }}</td>
+                        <td>{{ min['RAS1_f'] }}</td>
+                        <td>{{ min['RAS2T1_r'] }}</td>
+                        <td>{{ min['RAS2T1_f'] }}</td>
+                        <td>{{ min['RAS2T2_r'] }}</td>
+                        <td>{{ min['RAS2T2_f'] }}</td>
+                        <td>{{ min['RAS2T3_r'] }}</td>
+                        <td>{{ min['RAS2T3_f'] }}</td>
+                        <td>{{ min['RAS2T4_r'] }}</td>
+                        <td>{{ min['RAS2T4_f'] }}</td>
+                        <td>{{ min['RAS3_r'] }}</td>
+                        <td>{{ min['RAS3_f'] }}</td>
+                    </tr>
+                </table>
+                <a class="anchor" id="was-anchor"></a>
+                <table id="was-tbl" class="table">
+                    <thead>
+                        <tr>
+                            <th class="table-title toggler" colspan="13" v-on:click="hideBody(3)">
+                                Waste Table
+                                <button id="collapse-btn"><i v-bind:class="{ 'fa fa-compress': icons[3].c, 'fa fa-expand': icons[3].e  }" aria-hidden="true"></i></button>
+                            </th>
+                    </thead>
+                    <tr>
+                    	<th rowspan="3">Day</th>
+                    	<th colspan="2">{{ tops.WAS1_top }}</th>
+                    	<th colspan="2">{{ tops.WAS2T1_top }}</th>
+                    	<th colspan="2">{{ tops.WAS2T2_top }}</th>
+                    	<th colspan="2">{{ tops.WAS2T3_top }}</th>
+                    	<th colspan="2">{{ tops.WAS2T4_top }}</th>
+                    	<th colspan="2">{{ tops.WAS3_top }}</th>
+                    </tr>
+                    <tr>
+                        <th colspan="2">Plant 1 WAS.
+                            <br>x1000</th>
+                        <th colspan="2">Plant 2T1 WAS.
+                            <br>x1000</th>
+                        <th colspan="2">Plant 2T2 WAS.
+                            <br>x1000</th>
+                        <th colspan="2">Plant 2T3 WAS.
+                            <br>x1000</th>
+                        <th colspan="2">Plant 2T4 WAS.
+                            <br>x1000</th>
+                        <th colspan="2">Plant 3 WAS.
+                            <br>x1000</th>
+                    </tr>
+                    <tr class="b-div">
+                        <th class="sub-th">Reading</th>
+                        <th class="sub-th">Flow</th>
+                        <th class="sub-th">Reading</th>
+                        <th class="sub-th">Flow</th>
+                        <th class="sub-th">Reading</th>
+                        <th class="sub-th">Flow</th>
+                        <th class="sub-th">Reading</th>
+                        <th class="sub-th">Flow</th>
+                        <th class="sub-th">Reading</th>
+                        <th class="sub-th">Flow</th>
+                        <th class="sub-th">Reading</th>
+                        <th class="sub-th">Flow</th>
+                    </tr>
+                    <tbody v-bind:class="{ collapse: collapse[3] }">
+                        <tr v-for="day in days" class="hl-row">
+                            <td>{{ day.Day }}</td>
+                            <td>{{ day.WAS1_r }}</td>
+                            <td>{{ day.WAS1_f }}</td>
+                            <td>{{ day.WAS2T1_r }}</td>
+                            <td>{{ day.WAS2T1_f }}</td>
+                            <td>{{ day.WAS2T2_r }}</td>
+                            <td>{{ day.WAS2T2_f }}</td>
+                            <td>{{ day.WAS2T3_r }}</td>
+                            <td>{{ day.WAS2T3_f }}</td>
+                            <td>{{ day.WAS2T4_r }}</td>
+                            <td>{{ day.WAS2T4_f }}</td>
+                            <td>{{ day.WAS3_r }}</td>
+                            <td>{{ day.WAS3_f }}</td>
+                        </tr>
+                    </tbody>
+                    <tr class="t-div hl-row">
+                        <th>Tot.</th>
+                        <td>{{ sums['WAS1_r'] }}</td>
+                        <td>{{ sums['WAS1_f'] }}</td>
+                        <td>{{ sums['WAS2T1_r'] }}</td>
+                        <td>{{ sums['WAS2T1_f'] }}</td>
+                        <td>{{ sums['WAS2T2_r'] }}</td>
+                        <td>{{ sums['WAS2T2_f'] }}</td>
+                        <td>{{ sums['WAS2T3_r'] }}</td>
+                        <td>{{ sums['WAS2T3_f'] }}</td>
+                        <td>{{ sums['WAS2T4_r'] }}</td>
+                        <td>{{ sums['WAS2T4_f'] }}</td>
+                        <td>{{ sums['WAS3_r'] }}</td>
+                        <td>{{ sums['WAS3_f'] }}</td>
+                    </tr>
+                    <tr class="hl-row">
+                        <th>Avg.</th>
+                        <td>{{ avgs['WAS1_r'] }}</td>
+                        <td>{{ avgs['WAS1_f'] }}</td>
+                        <td>{{ avgs['WAS2T1_r'] }}</td>
+                        <td>{{ avgs['WAS2T1_f'] }}</td>
+                        <td>{{ avgs['WAS2T2_r'] }}</td>
+                        <td>{{ avgs['WAS2T2_f'] }}</td>
+                        <td>{{ avgs['WAS2T3_r'] }}</td>
+                        <td>{{ avgs['WAS2T3_f'] }}</td>
+                        <td>{{ avgs['WAS2T4_r'] }}</td>
+                        <td>{{ avgs['WAS2T4_f'] }}</td>
+                        <td>{{ avgs['WAS3_r'] }}</td>
+                        <td>{{ avgs['WAS3_f'] }}</td>
+                    </tr>
+                    <tr class="hl-row">
+                        <th>Max</th>
+                        <td>{{ max['WAS1_r'] }}</td>
+                        <td>{{ max['WAS1_f'] }}</td>
+                        <td>{{ max['WAS2T1_r'] }}</td>
+                        <td>{{ max['WAS2T1_f'] }}</td>
+                        <td>{{ max['WAS2T2_r'] }}</td>
+                        <td>{{ max['WAS2T2_f'] }}</td>
+                        <td>{{ max['WAS2T3_r'] }}</td>
+                        <td>{{ max['WAS2T3_f'] }}</td>
+                        <td>{{ max['WAS2T4_r'] }}</td>
+                        <td>{{ max['WAS2T4_f'] }}</td>
+                        <td>{{ max['WAS3_r'] }}</td>
+                        <td>{{ max['WAS3_f'] }}</td>
+                    </tr>
+                    <tr class="hl-row">
+                        <th>Min</th>
+                        <td>{{ min['WAS1_r'] }}</td>
+                        <td>{{ min['WAS1_f'] }}</td>
+                        <td>{{ min['WAS2T1_r'] }}</td>
+                        <td>{{ min['WAS2T1_f'] }}</td>
+                        <td>{{ min['WAS2T2_r'] }}</td>
+                        <td>{{ min['WAS2T2_f'] }}</td>
+                        <td>{{ min['WAS2T3_r'] }}</td>
+                        <td>{{ min['WAS2T3_f'] }}</td>
+                        <td>{{ min['WAS2T4_r'] }}</td>
+                        <td>{{ min['WAS2T4_f'] }}</td>
+                        <td>{{ min['WAS3_r'] }}</td>
+                        <td>{{ min['WAS3_f'] }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <button id="fab" v-on:click="newForm"><i class="material-icons">add</i></i></button>
+    </div>
+    <!-- source code -->
+    <script type="text/javascript" src="app.js?v=1.0"></script>
+</body>

@@ -1,0 +1,1647 @@
+<!DOCTYPE html>
+<html>
+<!-- PublicServices/Wastewater/LiftStationReport -->
+
+<head>
+    <title>Lift Station Report</title>
+    <!-- force no compatibility mode in IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="utf-8" />
+    <!-- Vue -->
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <!-- JQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <!-- oauth, thanks brandon -->
+    <script src="http://apps.cityoflewisville.com/COLSecurity/col_security.js"></script>
+    <!-- font awesome -->
+    <link rel="stylesheet" href="fontawesome/css/font-awesome.min.css">
+    <!-- styles -->
+    <link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+    <link rel="stylesheet" type="text/css" media="print" href="print.css" />
+    <!-- mobile friendly -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <div id="toolbar">
+        <div id="toolbar-title">
+            Lift Station Report
+        </div>
+    </div>
+    <!-- <h2>Confined Space Entry Permit</h2> -->
+    <div id="error" class="inactive">Record number not found in URL</div>
+    <div id="holder" class="active">
+        <div id="loader" class="active"></div>
+        <!-- big card container -->
+        <div id="card" class="card inactive">
+            <p class="card-subtitle">City of Lewisville - Wastewater Treatment Facility</p>
+            <p class="card-title"><b>Daily Lift Station - Operation &amp; Maintenance Report</b></p>
+            <p id="params"><b>Date:</b> {{ date }} &nbsp;&nbsp;&nbsp;&nbsp;<b>Shift:</b> {{ shift }}</p>
+            <div class="divider"></div>
+            <!-- anchor tag links -->
+            <table id="links-table">
+                <tr>
+                    <th class="table-title" colspan="4">Direct Links</th>
+                </tr>
+                <tr>
+                    <td><a class="link-td" href="#lp-anchor">Lake Park</a></td>
+                    <td><a class="link-td" href="#sa-anchor">San Antone</a></td>
+                    <td><a class="link-td" href="#rr-anchor">Railroad</a></td>
+                    <td><a class="link-td" href="#pft-anchor">Police &amp; Fire<br>Training</a></td>
+                </tr>
+                <tr>
+                    <td><a class="link-td" href="#fp-anchor">Forest Park</a></td>
+                    <td><a class="link-td" href="#vf-anchor">Valley Four</a></td>
+                    <td><a class="link-td" href="#hc-anchor">Hidden Cove</a></td>
+                    <td><a class="link-td" href="#w-anchor">Whippoorwill</a></td>
+                </tr>
+                <tr>
+                    <td><a class="link-td" href="#nm-anchor">North Mill</a></td>
+                    <td><a class="link-td" href="#co-anchor">Chase Oaks</a></td>
+                    <td><a class="link-td" href="#al-anchor">Ace Lane</a></td>
+                    <td><a class="link-td" href="#vr-anchor">Vista Ridge</a></td>
+                </tr>
+                <tr>
+                    <td><a class="link-td" href="#sp-anchor">Scottie's Point</a></td>
+                    <td><a class="link-td" href="#lp2-anchor">Lake Pointe</a></td>
+                    <td><a class="link-td" href="#ch-anchor">Castle Hills</a></td>
+                    <td><a class="link-td" href="#ntc-anchor">New Timber Creek</a></td>
+                </tr>
+                <tr>
+                    <td><a class="link-td" href="#hl-anchor">Highland Lakes</a></td>
+                    <td><a class="link-td" href="#mp-anchor">Metro-Park</a></td>
+                    <td><a class="link-td" href="#esss-anchor">East Side<br>Sanitary Sewer</a></td>
+                </tr>
+            </table>
+            <!-- LAKE PARK -->
+            <a class="anchor" id="lp-anchor"></a>
+            <table class="lift-table" id="lake-park">
+                <thead>
+                    <tr>
+                        <th class="table-title" colspan="3">LAKE PARK</th>
+                </thead>
+                </tr>
+                <tbody>
+                    <tr>
+                        <th class="table-subtitle top-divider">Operator</th>
+                        <td class="top-divider">{{ lp.LPOpName }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">Time</th>
+                        <td class="top-divider">{{ lp.TimeLP }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #1 for Pump &amp; Motor Noise</th>
+                        <td>{{ lp.LPP1Noise }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #2 for Pump &amp; Motor Noise</th>
+                        <td>{{ lp.LPP2Noise }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check High Level Alarm</th>
+                        <td>{{ lp.LPAlarm }}</td>
+                    </tr>
+                    <tr>
+                        <th>Pick Up Debris around Station</th>
+                        <td>{{ lp.LPDebris }}</td>
+                    </tr>
+                    <tr>
+                        <th>Visually Check Wet Well Level</th>
+                        <td>{{ lp.LPWWLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">MONITOR SCADA SYSTEM</th>
+                        <td class="top-divider">{{ lp.TimeLP2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>LOSS OF POWER</th>
+                        <td>{{ lp.LPPower }}</td>
+                    </tr>
+                    <tr>
+                        <th>HIGH LEVEL</th>
+                        <td>{{ lp.LPLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th>RTU COMMUNICATION</th>
+                        <td>{{ lp.LPComm }}</td>
+                    </tr>
+                    <tr>
+                        <th>CHECK TREND SCREEN</th>
+                        <td>{{ lp.LPTrend }}</td>
+                    </tr>
+                    <tr>
+                        <th class="top-divider">NOTES</th>
+                        <td class="notes top-divider">{{ lp.LPNotes }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- FOREST PARK -->
+            <a class="anchor" id="fp-anchor"></a>
+            <table class="lift-table" id="forest-park">
+                <thead>
+                    <tr>
+                        <th class="table-title" colspan="3">FOREST PARK</th>
+                </thead>
+                </tr>
+                <tbody>
+                    <tr>
+                        <th class="table-subtitle top-divider">Operator</th>
+                        <td class="top-divider">{{ fp.FPOpName }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">Time</th>
+                        <td class="top-divider">{{ fp.TimeFP }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #1 for Pump &amp; Motor Noise</th>
+                        <td>{{ fp.FPP1Noise }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #2 for Pump &amp; Motor Noise</th>
+                        <td>{{ fp.FPP2Noise }}</td>
+                    </tr>
+                    <tr>
+                        <th>Pick Up Debris around Station</th>
+                        <td>{{ fp.FPDebris }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check Exhaust Fan</th>
+                        <td>{{ fp.FPFan }}</td>
+                    </tr>
+                    <tr>
+                        <th>Visually Check Wet Well Level</th>
+                        <td>{{ fp.FPWWLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">MONITOR SCADA SYSTEM</th>
+                        <td class="top-divider">{{ fp.TimeFP2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>LOSS OF POWER</th>
+                        <td>{{ fp.FPPower }}</td>
+                    </tr>
+                    <tr>
+                        <th>HIGH LEVEL</th>
+                        <td>{{ fp.FPLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th>RTU COMMUNICATION</th>
+                        <td>{{ fp.FPComm }}</td>
+                    </tr>
+                    <tr>
+                        <th>CHECK TREND SCREEN</th>
+                        <td>{{ fp.FPTrend }}</td>
+                    </tr>
+                    <tr>
+                        <th class="top-divider">NOTES</th>
+                        <td class="notes top-divider" colspan="2">{{ fp.FPNotes }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- NORTH MILL -->
+            <a class="anchor" id="nm-anchor"></a>
+            <table class="lift-table" id="north-mill">
+                <thead>
+                    <tr>
+                        <th class="table-title" colspan="3">NORTH MILL</th>
+                </thead>
+                </tr>
+                <tbody>
+                    <tr>
+                        <th class="table-subtitle top-divider">Operator</th>
+                        <td class="top-divider">{{ nm.NMOpName }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">Time</th>
+                        <td class="top-divider">{{ nm.TimeNM }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #1 for Pump &amp; Motor Noise</th>
+                        <td>{{ nm.NMP1Noise }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #2 for Pump &amp; Motor Noise</th>
+                        <td>{{ nm.NMP2Noise }}</td>
+                    </tr>
+                    <tr>
+                        <th>Pick Up Debris around Station</th>
+                        <td>{{ nm.NMDebris }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check Exhaust Fan</th>
+                        <td>{{ nm.NMFan }}</td>
+                    </tr>
+                    <tr>
+                        <th>Visually Check Wet Well Level</th>
+                        <td>{{ nm.NMWWLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">MONITOR SCADA SYSTEM</th>
+                        <td class="top-divider">{{ nm.TimeNM2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>LOSS OF POWER</th>
+                        <td>{{ nm.NMPower }}</td>
+                    </tr>
+                    <tr>
+                        <th>HIGH LEVEL</th>
+                        <td>{{ nm.NMLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th>RTU COMMUNICATION</th>
+                        <td>{{ nm.NMComm }}</td>
+                    </tr>
+                    <tr>
+                        <th>CHECK TREND SCREEN</th>
+                        <td>{{ nm.NMTrend }}</td>
+                    </tr>
+                    <tr>
+                        <th class="top-divider">NOTES</th>
+                        <td class="notes top-divider" colspan="2">{{ nm.NMNotes }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- SCOTTIE'S POINT -->
+            <a class="anchor" id="sp-anchor"></a>
+            <table class="lift-table" id="scotties-point">
+                <thead>
+                    <tr>
+                        <th class="table-title" colspan="3">SCOTTIE'S POINT</th>
+                </thead>
+                </tr>
+                <tbody>
+                    <tr>
+                        <th class="table-subtitle top-divider">Operator</th>
+                        <td class="top-divider">{{ sp.SPOpName }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">Time</th>
+                        <td class="top-divider">{{ sp.TimeSP }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #1 for Pump &amp; Motor Noise</th>
+                        <td>{{ sp.SPP1Noise }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #2 for Pump &amp; Motor Noise</th>
+                        <td>{{ sp.SPP2Noise }}</td>
+                    </tr>
+                    <tr>
+                        <th>Pick Up Debris around Station</th>
+                        <td>{{ sp.SPDebris }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check Exhaust Fan</th>
+                        <td>{{ sp.SPFan }}</td>
+                    </tr>
+                    <tr>
+                        <th>Visually Check Wet Well Level</th>
+                        <td>{{ sp.SPWWLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">MONITOR SCADA SYSTEM</th>
+                        <td class="top-divider">{{ sp.TimeSP2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>LOSS OF POWER</th>
+                        <td>{{ sp.SPPower }}</td>
+                    </tr>
+                    <tr>
+                        <th>HIGH LEVEL</th>
+                        <td>{{ sp.SPLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th>RTU COMMUNICATION</th>
+                        <td>{{ sp.SPComm }}</td>
+                    </tr>
+                    <tr>
+                        <th>CHECK TREND SCREEN</th>
+                        <td>{{ sp.SPTrend }}</td>
+                    </tr>
+                    <tr>
+                        <th class="top-divider">NOTES</th>
+                        <td class="notes top-divider" colspan="2">{{ sp.SPNotes }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- HIGHLAND LAKES -->
+            <a class="anchor" id="hl-anchor"></a>
+            <table class="lift-table" id="highland-lakes">
+                <thead>
+                    <tr>
+                        <th class="table-title" colspan="3">HIGHLAND LAKES</th>
+                </thead>
+                </tr>
+                <tbody>
+                    <tr>
+                        <th class="table-subtitle top-divider">Operator</th>
+                        <td class="top-divider">{{ hl.HLOpName }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">Time</th>
+                        <td class="top-divider">{{ hl.TimeHL }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #1 for Pump &amp; Motor Noise</th>
+                        <td>{{ hl.HLP1Noise }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #2 for Pump &amp; Motor Noise</th>
+                        <td>{{ hl.HLP2Noise }}</td>
+                    </tr>
+                    <tr>
+                        <th>Pick Up Debris around Station</th>
+                        <td>{{ hl.HLDebris }}</td>
+                    </tr>
+                    <tr>
+                        <th>Visually Check Wet Well Level</th>
+                        <td>{{ hl.HLWWLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">MONITOR SCADA SYSTEM</th>
+                        <td class="top-divider">{{ hl.TimeHL2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>LOSS OF POWER</th>
+                        <td>{{ hl.HLPower }}</td>
+                    </tr>
+                    <tr>
+                        <th>HIGH LEVEL</th>
+                        <td>{{ hl.HLLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th>SEAL FAIL #1</th>
+                        <td>{{ hl.HLSeal1 }}</td>
+                    </tr>
+                    <tr>
+                        <th>SEAL FAIL #2</th>
+                        <td>{{ hl.HLSeal2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>CHECK TREND SCREEN</th>
+                        <td>{{ hl.HLTrend }}</td>
+                    </tr>
+                    <tr>
+                        <th class="top-divider">NOTES</th>
+                        <td class="notes top-divider" colspan="2">{{ hl.HLNotes }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- SAN ANTONE -->
+            <a class="anchor" id="sa-anchor"></a>
+            <table class="lift-table" id="san-antone">
+                <thead>
+                    <tr>
+                        <th class="table-title" colspan="3">SAN ANTONE</th>
+                </thead>
+                </tr>
+                <tbody>
+                    <tr>
+                        <th class="table-subtitle top-divider">Operator</th>
+                        <td class="top-divider">{{ sa.SAOpName }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">Time</th>
+                        <td class="top-divider">{{ sa.TimeSA }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #1 for Pump &amp; Motor Noise</th>
+                        <td>{{ sa.SAP1Noise }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #2 for Pump &amp; Motor Noise</th>
+                        <td>{{ sa.SAP2Noise }}</td>
+                    </tr>
+                    <tr>
+                        <th>Pick Up Debris around Station</th>
+                        <td>{{ sa.SADebris }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check High Level Alarm</th>
+                        <td>{{ sa.SAAlarm }}</td>
+                    </tr>
+                    <tr>
+                        <th>Visually Check Wet Well Level</th>
+                        <td>{{ sa.SAWWLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">MONITOR SCADA SYSTEM</th>
+                        <td class="top-divider">{{ sa.TimeSA2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>LOSS OF POWER</th>
+                        <td>{{ sa.SAPower }}</td>
+                    </tr>
+                    <tr>
+                        <th>HIGH LEVEL</th>
+                        <td>{{ sa.SALevel }}</td>
+                    </tr>
+                    <tr>
+                        <th>RTU COMMUNICATION</th>
+                        <td>{{ sa.SAComm }}</td>
+                    </tr>
+                    <tr>
+                        <th>CHECK TREND SCREEN</th>
+                        <td>{{ sa.SATrend }}</td>
+                    </tr>
+                    <tr>
+                        <th class="top-divider">NOTES</th>
+                        <td class="notes top-divider">{{ sa.SANotes }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- VALLEY FOUR -->
+            <a class="anchor" id="vf-anchor"></a>
+            <table class="lift-table" id="valley-four">
+                <thead>
+                    <tr>
+                        <th class="table-title" colspan="3">VALLEY FOUR</th>
+                </thead>
+                </tr>
+                <tbody>
+                    <tr>
+                        <th class="table-subtitle top-divider">Operator</th>
+                        <td class="top-divider">{{ vf.VFOpName }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">Time</th>
+                        <td class="top-divider">{{ vf.TimeVF }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #1 for Pump &amp; Motor Noise</th>
+                        <td>{{ vf.VFP1Noise }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #2 for Pump &amp; Motor Noise</th>
+                        <td>{{ vf.VFP2Noise }}</td>
+                    </tr>
+                    <tr>
+                        <th>Pick Up Debris around Station</th>
+                        <td>{{ vf.VFDebris }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check Exhaust Fan</th>
+                        <td>{{ vf.VFFan }}</td>
+                    </tr>
+                    <tr>
+                        <th>Visually Check Wet Well Level</th>
+                        <td>{{ vf.VFWWLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">MONITOR SCADA SYSTEM</th>
+                        <td class="top-divider">{{ vf.TimeVF2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>LOSS OF POWER</th>
+                        <td>{{ vf.VFPower }}</td>
+                    </tr>
+                    <tr>
+                        <th>HIGH LEVEL</th>
+                        <td>{{ vf.VFLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th>RTU COMMUNICATION</th>
+                        <td>{{ vf.VFComm }}</td>
+                    </tr>
+                    <tr>
+                        <th>CHECK TREND SCREEN</th>
+                        <td>{{ vf.VFTrend }}</td>
+                    </tr>
+                    <tr>
+                        <th class="top-divider">NOTES</th>
+                        <td class="notes top-divider" colspan="2">{{ vf.VFNotes }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- CHASE OAKS -->
+            <a class="anchor" id="co-anchor"></a>
+            <table class="lift-table" id="chase-oaks">
+                <thead>
+                    <tr>
+                        <th class="table-title" colspan="3">CHASE OAKS</th>
+                </thead>
+                </tr>
+                <tbody>
+                    <tr>
+                        <th class="table-subtitle top-divider">Operator</th>
+                        <td class="top-divider">{{ co.COOpName }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">Time</th>
+                        <td class="top-divider">{{ co.TimeCO }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #1 for Pump &amp; Motor Noise</th>
+                        <td>{{ co.COP1Noise }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #2 for Pump &amp; Motor Noise</th>
+                        <td>{{ co.COP2Noise }}</td>
+                    </tr>
+                    <tr>
+                        <th>Pick Up Debris around Station</th>
+                        <td>{{ co.CODebris }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check Exhaust Fan</th>
+                        <td>{{ co.COFan }}</td>
+                    </tr>
+                    <tr>
+                        <th>Visually Check Wet Well Level</th>
+                        <td>{{ co.COWWLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">MONITOR SCADA SYSTEM</th>
+                        <td class="top-divider">{{ co.TimeCO2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>LOSS OF POWER</th>
+                        <td>{{ co.COPower }}</td>
+                    </tr>
+                    <tr>
+                        <th>HIGH LEVEL</th>
+                        <td>{{ co.COLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th>RTU COMMUNICATION</th>
+                        <td>{{ co.COComm }}</td>
+                    </tr>
+                    <tr>
+                        <th>CHECK TREND SCREEN</th>
+                        <td>{{ co.COTrend }}</td>
+                    </tr>
+                    <tr>
+                        <th class="top-divider">NOTES</th>
+                        <td class="notes top-divider" colspan="2">{{ co.CONotes }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- LAKE POINTE -->
+            <a class="anchor" id="lp2-anchor"></a>
+            <table class="lift-table" id="lake-pointe">
+                <thead>
+                    <tr>
+                        <th class="table-title" colspan="3">LAKE POINTE</th>
+                </thead>
+                </tr>
+                <tbody>
+                    <tr>
+                        <th class="table-subtitle top-divider">Operator</th>
+                        <td class="top-divider">{{ lp2.LP2OpName }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">Time</th>
+                        <td class="top-divider">{{ lp2.TimeLP2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #1 for Pump &amp; Motor Noise</th>
+                        <td>{{ lp2.LP2P1Noise }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #2 for Pump &amp; Motor Noise</th>
+                        <td>{{ lp2.LP2P2Noise }}</td>
+                    </tr>
+                    <tr>
+                        <th>Pick Up Debris around Station</th>
+                        <td>{{ lp2.LP2Debris }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check Exhaust Fan</th>
+                        <td>{{ lp2.LP2Fan }}</td>
+                    </tr>
+                    <tr>
+                        <th>Visually Check Wet Well Level</th>
+                        <td>{{ lp2.LP2WWLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">MONITOR SCADA SYSTEM</th>
+                        <td class="top-divider">{{ lp2.TimeLP22 }}</td>
+                    </tr>
+                    <tr>
+                        <th>LOSS OF POWER</th>
+                        <td>{{ lp2.LP2Power }}</td>
+                    </tr>
+                    <tr>
+                        <th>HIGH LEVEL</th>
+                        <td>{{ lp2.LP2Level }}</td>
+                    </tr>
+                    <tr>
+                        <th>RTU COMMUNICATION</th>
+                        <td>{{ lp2.LP2Comm }}</td>
+                    </tr>
+                    <tr>
+                        <th>CHECK TREND SCREEN</th>
+                        <td>{{ lp2.LP2Trend }}</td>
+                    </tr>
+                    <tr>
+                        <th class="top-divider">NOTES</th>
+                        <td class="notes top-divider" colspan="2">{{ lp2.LP2Notes }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- METRO-PARK -->
+            <a class="anchor" id="mp-anchor"></a>
+            <table class="lift-table" id="metro-park">
+                <thead>
+                    <tr>
+                        <th class="table-title" colspan="3">METRO-PARK</th>
+                </thead>
+                </tr>
+                <tbody>
+                    <tr>
+                        <th class="table-subtitle top-divider">Operator</th>
+                        <td class="top-divider">{{ mp.MPOpName }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">Time</th>
+                        <td class="top-divider">{{ mp.TimeMP }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #1 for Pump &amp; Motor Noise</th>
+                        <td>{{ mp.MPP1Noise }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #2 for Pump &amp; Motor Noise</th>
+                        <td>{{ mp.MPP2Noise }}</td>
+                    </tr>
+                    <tr>
+                        <th>Pick Up Debris around Station</th>
+                        <td>{{ mp.MPDebris }}</td>
+                    </tr>
+                    <tr>
+                        <th>Clean Inside the Building</th>
+                        <td>{{ mp.MPCleaning }}</td>
+                    </tr>
+                    <tr>
+                        <th>Visually Check Wet Well Level</th>
+                        <td>{{ mp.MPWWLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">MONITOR SCADA SYSTEM</th>
+                        <td class="top-divider">{{ mp.TimeMP2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>LOSS OF POWER</th>
+                        <td>{{ mp.MPPower }}</td>
+                    </tr>
+                    <tr>
+                        <th>HIGH LEVEL</th>
+                        <td>{{ mp.MPLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th>INTRUSION ALARM</th>
+                        <td>{{ mp.MPIntrAlarm }}</td>
+                    </tr>
+                    <tr>
+                        <th>RTU COMMUNICATION</th>
+                        <td>{{ mp.MPComm }}</td>
+                    </tr>
+                    <tr>
+                        <th>CHECK TREND SCREEN</th>
+                        <td>{{ mp.MPTrend }}</td>
+                    </tr>
+                    <tr>
+                        <th class="top-divider">NOTES</th>
+                        <td class="notes top-divider" colspan="2">{{ mp.MPNotes }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- RAILROAD -->
+            <a class="anchor" id="rr-anchor"></a>
+            <table class="lift-table" id="railroad">
+                <thead>
+                    <tr>
+                        <th class="table-title" colspan="3">RAILROAD</th>
+                </thead>
+                </tr>
+                <tbody>
+                    <tr>
+                        <th class="table-subtitle top-divider">Operator</th>
+                        <td class="top-divider">{{ rr.RROpName }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">Time</th>
+                        <td class="top-divider">{{ rr.TimeRR }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #1 for Pump &amp; Motor Noise</th>
+                        <td>{{ rr.RRP1Noise }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #2 for Pump &amp; Motor Noise</th>
+                        <td>{{ rr.RRP2Noise }}</td>
+                    </tr>
+                    <tr>
+                        <th>Pick Up Debris around Station</th>
+                        <td>{{ rr.RRDebris }}</td>
+                    </tr>
+                    <tr>
+                        <th>Visually Check Wet Well Level</th>
+                        <td>{{ rr.RRWWLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">MONITOR SCADA SYSTEM</th>
+                        <td class="top-divider">{{ rr.TimeRR2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>LOW LEVEL</th>
+                        <td>{{ rr.RRLowLev }}</td>
+                    </tr>
+                    <tr>
+                        <th>HIGH LEVEL</th>
+                        <td>{{ rr.RRLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th>LOSS OF POWER</th>
+                        <td>{{ rr.RRPower }}</td>
+                    </tr>
+                    <tr>
+                        <th>RTU COMMUNICATION</th>
+                        <td>{{ rr.RRComm }}</td>
+                    </tr>
+                    <tr>
+                        <th>WET WELL LEVEL</th>
+                        <td>{{ rr.RRWWLevel2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>CHECK TREND SCREEN</th>
+                        <td>{{ rr.RRTrend }}</td>
+                    </tr>
+                    <tr>
+                        <th class="top-divider">NOTES</th>
+                        <td class="notes top-divider" colspan="2">{{ rr.RRNotes }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- HIDDEN COVE -->
+            <a class="anchor" id="hc-anchor"></a>
+            <table class="lift-table" id="hidden-cove">
+                <thead>
+                    <tr>
+                        <th class="table-title" colspan="3">HIDDEN COVE</th>
+                </thead>
+                </tr>
+                <tbody>
+                    <tr>
+                        <th class="table-subtitle top-divider">Operator</th>
+                        <td class="top-divider">{{ hc.HCOpName }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">Time</th>
+                        <td class="top-divider">{{ hc.TimeHC }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check and Record Wet Well Level</th>
+                        <td>{{ hc.HCCkWWLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check High Level Alarm</th>
+                        <td>{{ hc.HCAlarm }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check Pumps by Running in Hand</th>
+                        <td>{{ hc.HCCkPumpsInHand }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check for Damage to Fence</th>
+                        <td>{{ hc.HCCkFence }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check for any Unusual Activity</th>
+                        <td>{{ hc.HCCkActivity }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">MONITOR SCADA SYSTEM</th>
+                        <td class="top-divider">{{ hc.TimeHC2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>LOSS OF POWER</th>
+                        <td>{{ hc.HCPower }}</td>
+                    </tr>
+                    <tr>
+                        <th>HIGH LEVEL</th>
+                        <td>{{ hc.HCLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th>INTRUSION ALARM</th>
+                        <td>{{ hc.HCIntrAlarm }}</td>
+                    </tr>
+                    <tr>
+                        <th>RTU COMMUNICATION</th>
+                        <td>{{ hc.HCComm }}</td>
+                    </tr>
+                    <tr>
+                        <th>CHECK TREND SCREEN</th>
+                        <td>{{ hc.HCTrend }}</td>
+                    </tr>
+                    <tr>
+                        <th class="top-divider">NOTES</th>
+                        <td class="notes top-divider" colspan="2">{{ hc.HCNotes }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- ACE LANE -->
+            <a class="anchor" id="al-anchor"></a>
+            <table class="lift-table" id="ace-lane">
+                <thead>
+                    <tr>
+                        <th class="table-title" colspan="3">ACE LANE</th>
+                </thead>
+                </tr>
+                <tbody>
+                    <tr>
+                        <th class="table-subtitle top-divider">Operator</th>
+                        <td class="top-divider">{{ al.ALOpName }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">MONITOR SCADA SYSTEM</th>
+                        <td class="top-divider">{{ al.TimeAL }}</td>
+                    </tr>
+                    <tr>
+                        <th>AC FAIL</th>
+                        <td>{{ al.ALACFail }}</td>
+                    </tr>
+                    <tr>
+                        <th>INTRUSION ALARM</th>
+                        <td>{{ al.ALIntrAlarm }}</td>
+                    </tr>
+                    <tr>
+                        <th>HIGH LEVEL</th>
+                        <td>{{ al.ALLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th>RTU COMMUNICATION</th>
+                        <td>{{ al.ALComm }}</td>
+                    </tr>
+                    <tr>
+                        <th>FLOW (GPM)</th>
+                        <td>{{ al.ALFlowGPM }}</td>
+                    </tr>
+                    <tr>
+                        <th>CHECK TREND SCREEN</th>
+                        <td>{{ al.ALTrend }}</td>
+                    </tr>
+                    <tr>
+                        <th class="top-divider">NOTES</th>
+                        <td class="notes top-divider" colspan="2">{{ al.ALNotes }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- CASTLE HILLS -->
+            <a class="anchor" id="ch-anchor"></a>
+            <table class="lift-table" id="castle-hills">
+                <thead>
+                    <tr>
+                        <th class="table-title" colspan="3">CASTLE HILLS</th>
+                </thead>
+                </tr>
+                <tbody>
+                    <tr>
+                        <th class="table-subtitle top-divider">Operator</th>
+                        <td class="top-divider">{{ ch.CHOpName }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">MONITOR SCADA SYSTEM</th>
+                        <td class="top-divider">{{ ch.TimeCH }}</td>
+                    </tr>
+                    <tr>
+                        <th>AC FAIL</th>
+                        <td>{{ ch.CHACFail }}</td>
+                    </tr>
+                    <tr>
+                        <th>INTRUSION ALARM</th>
+                        <td>{{ ch.CHIntrAlarm }}</td>
+                    </tr>
+                    <tr>
+                        <th>HIGH LEVEL</th>
+                        <td>{{ ch.CHLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th>RTU COMMUNICATION</th>
+                        <td>{{ ch.CHComm }}</td>
+                    </tr>
+                    <tr>
+                        <th>FLOW (GPM)</th>
+                        <td>{{ ch.CHFlowGPM }}</td>
+                    </tr>
+                    <tr>
+                        <th>HIGH FLOW ALARM</th>
+                        <td>{{ ch.CHHFAlarm }}</td>
+                    </tr>
+                    <tr>
+                        <th>CHECK TREND SCREEN</th>
+                        <td>{{ ch.CHTrend }}</td>
+                    </tr>
+                    <tr>
+                        <th class="top-divider">NOTES</th>
+                        <td class="notes top-divider" colspan="2">{{ ch.CHNotes }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- EAST SIDE SANITARY SEWER -->
+            <a class="anchor" id="esss-anchor"></a>
+            <table class="lift-table" id="east-side">
+                <thead>
+                    <tr>
+                        <th class="table-title" colspan="3">EAST SIDE SANITARY SEWER</th>
+                </thead>
+                </tr>
+                <tbody>
+                    <tr>
+                        <th class="table-subtitle top-divider">Operator</th>
+                        <td class="top-divider">{{ esss.ESSSOpName }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">MONITOR SCADA SYSTEM</th>
+                        <td class="top-divider">{{ esss.TimeESSS }}</td>
+                    </tr>
+                    <tr>
+                        <th>RTU AC FAIL</th>
+                        <td>{{ esss.ESSSRtuACFail }}</td>
+                    </tr>
+                    <tr>
+                        <th>AC FAIL</th>
+                        <td>{{ esss.ESSSACFail }}</td>
+                    </tr>
+                    <tr>
+                        <th>RTU COMMUNICATION</th>
+                        <td>{{ esss.ESSSComm }}</td>
+                    </tr>
+                    <tr>
+                        <th>FLOW (GPM)</th>
+                        <td>{{ esss.ESSSFlowGPM }}</td>
+                    </tr>
+                    <tr>
+                        <th>CHECK TREND SCREEN</th>
+                        <td>{{ esss.ESSSTrend }}</td>
+                    </tr>
+                    <tr>
+                        <th class="top-divider">NOTES</th>
+                        <td class="notes top-divider" colspan="2">{{ esss.ESSSNotes }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- POLICE & FIRE TRAINING -->
+            <a class="anchor" id="pft-anchor"></a>
+            <table class="lift-table" id="police-fire">
+                <thead>
+                    <tr>
+                        <th class="table-title" colspan="3">POLICE &amp; FIRE TRAINING</th>
+                </thead>
+                </tr>
+                <tbody>
+                    <tr>
+                        <th class="table-subtitle top-divider">Operator</th>
+                        <td class="top-divider">{{ pf.PFTOpName }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">Time</th>
+                        <td class="top-divider">{{ pf.TimePFT }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #1 for Pump &amp; Motor Noise</th>
+                        <td>{{ pf.PFTP1Noise }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #2 for Pump &amp; Motor Noise</th>
+                        <td>{{ pf.PFTP2Noise }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check High Level Alarm</th>
+                        <td>{{ pf.PFTAlarm }}</td>
+                    </tr>
+                    <tr>
+                        <th>Pick Up Debris around Station</th>
+                        <td>{{ pf.PFTDebris }}</td>
+                    </tr>
+                    <tr>
+                        <th>Visually Check Wet Well Level</th>
+                        <td>{{ pf.PFTWWLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">MONITOR SCADA SYSTEM</th>
+                        <td class="top-divider">{{ pf.TimePFTScada }}</td>
+                    </tr>
+                    <tr>
+                        <th>LOSS OF POWER</th>
+                        <td>{{ pf.PFTPower }}</td>
+                    </tr>
+                    <tr>
+                        <th>HIGH LEVEL</th>
+                        <td>{{ pf.PFTLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th>RTU COMMUNICATION</th>
+                        <td>{{ pf.PFTComm }}</td>
+                    </tr>
+                    <tr>
+                        <th>CHECK TREND SCREEN</th>
+                        <td>{{ pf.PFTTrend }}</td>
+                    </tr>
+                    <tr>
+                        <th class="top-divider">NOTES</th>
+                        <td class="notes top-divider" colspan="2">{{ pf.PFTNotes }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- WHIPPOORWILL -->
+            <a class="anchor" id="w-anchor"></a>
+            <table class="lift-table" id="whippoorwill">
+                <thead>
+                    <tr>
+                        <th class="table-title" colspan="3">WHIPPOORWILL</th>
+                </thead>
+                </tr>
+                <tbody>
+                    <tr>
+                        <th class="table-subtitle top-divider">Operator</th>
+                        <td class="top-divider">{{ ww.WOpName }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">Time</th>
+                        <td class="top-divider">{{ ww.TimeW }}</td>
+                    </tr>
+                    <tr>
+                        <th>Record Milltronic Wet Well Level</th>
+                        <td>{{ ww.WMillWWLev }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check Magmeter and All Charts</th>
+                        <td>{{ ww.WCkMagCharts }}</td>
+                    </tr>
+                    <tr>
+                        <th>Remove Trash/Debris from Basement</th>
+                        <td>{{ ww.WTrashBase }}</td>
+                    </tr>
+                    <tr>
+                        <th>Clean Dry Well</th>
+                        <td>{{ ww.WCleanDryWell }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #1 Mechanical Seal for Leaks</th>
+                        <td>{{ ww.WCkM1forLeak }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #2 Mechanical Seal for Leaks</th>
+                        <td>{{ ww.WCkM2forLeak }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #3 Mechanical Seal for Leaks</th>
+                        <td>{{ ww.WCkM3forLeak }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #1 Drive Shaft &amp; Bearings</th>
+                        <td>{{ ww.WCkD1 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #2 Drive Shaft &amp; Bearings</th>
+                        <td>{{ ww.WCkD2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #3 Drive Shaft &amp; Bearings</th>
+                        <td>{{ ww.WCkD3 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #1 for Bearing Noise &amp; Heat</th>
+                        <td>{{ ww.WCkB1 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #2 for Bearing Noise &amp; Heat</th>
+                        <td>{{ ww.WCkB2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #3 for Bearing Noise &amp; Heat</th>
+                        <td>{{ ww.WCkB3 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #1 for Pump/Motor Vibration</th>
+                        <td>{{ ww.WCkPM1 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #2 for Pump/Motor Vibration</th>
+                        <td>{{ ww.WCkPM2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #3 for Pump/Motor Vibration</th>
+                        <td>{{ ww.WCkPM3 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Pick up Debris around Station</th>
+                        <td>{{ ww.WDebris }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check Exhaust Fans</th>
+                        <td>{{ ww.WFan }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check Heater during Winter Months</th>
+                        <td>{{ ww.WCkHeater }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check Emergency Lighting</th>
+                        <td>{{ ww.WCkLighting }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check Auxiliary Engine (Wednesdays)</th>
+                        <td>{{ ww.WAuxEngWed }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">MONITOR SCADA SYSTEM</th>
+                        <td class="top-divider">{{ ww.WTime2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>LOSS OF POWER</th>
+                        <td>{{ ww.WPower }}</td>
+                    </tr>
+                    <tr>
+                        <th>INTRUSION ALARM</th>
+                        <td>{{ ww.WIntrAlarm }}</td>
+                    </tr>
+                    <tr>
+                        <th>RTU COMMUNICATION</th>
+                        <td>{{ ww.WComm }}</td>
+                    </tr>
+                    <tr>
+                        <th>WET WELL LEVEL</th>
+                        <td>{{ ww.WWWLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th>CHECK TREND SCREEN</th>
+                        <td>{{ ww.WTrend }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider" colspan="2">CHECK AND RECORD THE FOLLOWING
+                            <BR>INFORMATION BEFORE ENTERING THE DRY WELL</th>
+                    </tr>
+                    <tr>
+                        <th class="top-divider">All Exhaust/Supply Fans On and Working</th>
+                        <td class="top-divider">{{ ww.WExFansWkg }}</td>
+                    </tr>
+                    <tr>
+                        <th colspan="2">RKI GAS DETECTOR: </th>
+                    </tr>
+                    <tr>
+                        <th>Hydrogen Sulfide (ALARMS AT 10PPM)</th>
+                        <td>{{ ww.WHydSulf }}</td>
+                    </tr>
+                    <tr>
+                        <th>Methane (ALARMS AT 10%LEL)</th>
+                        <td>{{ ww.WMethane }}</td>
+                    </tr>
+                    <tr>
+                        <th>Oxygen (ALARMS AT 19.4 OR 23.6)</th>
+                        <td>{{ ww.WOxygen }}</td>
+                    </tr>
+                    <tr>
+                        <th>DID YOU ENTER THE DRY WELL?</th>
+                        <td>{{ ww.WEnterDryWell }}</td>
+                    </tr>
+                    <tr>
+                        <th class="top-divider">NOTES</th>
+                        <td class="notes top-divider" colspan="2">{{ ww.WNotes }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- VISTA RIDGE -->
+            <a class="anchor" id="vr-anchor"></a>
+            <table class="lift-table" id="vista-ridge">
+                <thead>
+                    <tr>
+                        <th class="table-title" colspan="3">Vista Ridge</th>
+                </thead>
+                </tr>
+                <tbody>
+                    <tr>
+                        <th class="table-subtitle top-divider">Operator</th>
+                        <td class="top-divider">{{ vr.VROpName }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">Time</th>
+                        <td class="top-divider">{{ vr.TimeVR }}</td>
+                    </tr>
+                    <tr>
+                        <th>Record Milltronic Wet Well Level</th>
+                        <td>{{ vr.VRMillWWLev }}</td>
+                    </tr>
+                    <tr>
+                        <th>Remove Trash/Debris from Basement</th>
+                        <td>{{ vr.VRTrashBase }}</td>
+                    </tr>
+                    <tr>
+                        <th>CLean Motor Room Basement</th>
+                        <td>{{ vr.VRClnMRBase }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #1 Packing for Tightness</th>
+                        <td>{{ vr.VRCk1Tight }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #2 Packing for Tightness</th>
+                        <td>{{ vr.VRCk2Tight }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #3 Packing for Tightness</th>
+                        <td>{{ vr.VRCk3Tight }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #1 Drive Shaft &amp; Bearings</th>
+                        <td>{{ vr.VRCkD1 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #2 Drive Shaft &amp; Bearings</th>
+                        <td>{{ vr.VRCkD2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #3 Drive Shaft &amp; Bearings</th>
+                        <td>{{ vr.VRCkD3 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #1 for Bearing Noise &amp; Heat</th>
+                        <td>{{ vr.VRCkB1 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #2 for Bearing Noise &amp; Heat</th>
+                        <td>{{ vr.VRCkB2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #3 for Bearing Noise &amp; Heat</th>
+                        <td>{{ vr.VRCkB3 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #1 for Pump/Motor Vibration</th>
+                        <td>{{ vr.VRCkPM1 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #2 for Pump/Motor Vibration</th>
+                        <td>{{ vr.VRCkPM2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #3 for Pump/Motor Vibration</th>
+                        <td>{{ vr.VRCkPM3 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Pick up Debris around Station</th>
+                        <td>{{ vr.VRDebris }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check Wet Well Exhaust Fans</th>
+                        <td>{{ vr.VRWWExFan }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check Basement Exhaust Fans</th>
+                        <td>{{ vr.VRCkExFanBase }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check Emergency Lighting</th>
+                        <td>{{ vr.VRCkLighting }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check Auxiliary Engine (Wednesdays)</th>
+                        <td>{{ vr.VRAuxEngWed }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider" colspan="2">CHECK AND RECORD THE FOLLOWING
+                            <BR>INFORMATION BEFORE ENTERING THE DRY WELL</th>
+                    </tr>
+                    <tr>
+                        <th class="top-divider">All Exhaust/Supply Fans On and Working</th>
+                        <td class="top-divider">{{ vr.VRExFansWkg }}</td>
+                    </tr>
+                    <tr>
+                        <th colspan="2">RKI GAS DETECTOR: </th>
+                    </tr>
+                    <tr>
+                        <th>Hydrogen Sulfide (ALARMS AT 10PPM)</th>
+                        <td>{{ vr.WVRHydSulf }}</td>
+                    </tr>
+                    <tr>
+                        <th>Methane (ALARMS AT 10%LEL)</th>
+                        <td>{{ vr.VRMethane }}</td>
+                    </tr>
+                    <tr>
+                        <th>Oxygen (ALARMS AT 19.4 OR 23.6)</th>
+                        <td>{{ vr.VROxygen }}</td>
+                    </tr>
+                    <tr>
+                        <th>DID YOU ENTER THE DRY WELL?</th>
+                        <td>{{ vr.VREnterDryWell }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">MONITOR SCADA SYSTEM</th>
+                        <td class="top-divider">{{ vr.TimeVR2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>LOSS OF POWER</th>
+                        <td>{{ vr.VRPower }}</td>
+                    </tr>
+                    <tr>
+                        <th>INTRUSION ALARM</th>
+                        <td>{{ vr.VRIntrAlarm }}</td>
+                    </tr>
+                    <tr>
+                        <th>RTU COMMUNICATION</th>
+                        <td>{{ vr.VRComm }}</td>
+                    </tr>
+                    <tr>
+                        <th>WET WELL LEVEL</th>
+                        <td>{{ vr.VRWWLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th>CHECK TREND SCREEN</th>
+                        <td>{{ vr.VRTrend }}</td>
+                    </tr>
+                    <tr>
+                        <th class="top-divider">NOTES</th>
+                        <td class="notes top-divider" colspan="2">{{ vr.VRNotes }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- NEW TIMBER CREEK -->
+            <a class="anchor" id="ntc-anchor"></a>
+            <table class="lift-table" id="new-timber-creek">
+                <thead>
+                    <tr>
+                        <th class="table-title" colspan="3">New Timber Creek</th>
+                </thead>
+                </tr>
+                <tbody>
+                    <tr>
+                        <th class="table-subtitle top-divider">Operator</th>
+                        <td class="top-divider">{{ ntc.NTCOpName }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">Time</th>
+                        <td class="top-divider">{{ ntc.TimeNTC }}</td>
+                    </tr>
+                    <tr>
+                        <th>Wet Well Level - Hydro Ranger</th>
+                        <td>{{ ntc.NTCWWHydro }}</td>
+                    </tr>
+                    <tr>
+                        <th>Wet Well Level - Pressure XMeter</th>
+                        <td>{{ ntc.NTCWWXMeter }}</td>
+                    </tr>
+                    <tr>
+                        <th>Surge Protection (3 Green Lights)</th>
+                        <td>{{ ntc.NTCSurge3Green }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check Generator Screen for Alarms</th>
+                        <td>{{ ntc.NTCCkGenScrn }}</td>
+                    </tr>
+                    <tr>
+                        <th>Sweep Motor Room</th>
+                        <td>{{ ntc.NTCSweepMotor }}</td>
+                    </tr>
+                    <tr>
+                        <th>Sweep Electrical Room</th>
+                        <td>{{ ntc.NTCSweepElec }}</td>
+                    </tr>
+                    <tr>
+                        <th>Clean Basement</th>
+                        <td>{{ ntc.NTCClnBase }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check Odor Control System</th>
+                        <td>{{ ntc.NTCCkOdorSys }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check Pump #1 Seal Water/Leaks</th>
+                        <td>{{ ntc.NTCCkP1Seal }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check Pump #2 Seal Water/Leaks</th>
+                        <td>{{ ntc.NTCCkP2Seal }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check Pump #6 Seal Water/Leaks</th>
+                        <td>{{ ntc.NTCCkP6Seal }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check Pump #7 Seal Water/Leaks</th>
+                        <td>{{ ntc.NTCCkP7Seal }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #1 for Bearing Noise &amp; Heat</th>
+                        <td>{{ ntc.NTCCk1Noise }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #2 for Bearing Noise &amp; Heat</th>
+                        <td>{{ ntc.NTCCk2Noise }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #6 for Bearing Noise &amp; Heat</th>
+                        <td>{{ ntc.NTCCk6Noise }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #7 for Bearing Noise &amp; Heat</th>
+                        <td>{{ ntc.NTCCk7Noise }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #1 for Pump/Shaft/Vibration</th>
+                        <td>{{ ntc.NTCCk1Vibr }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #2 for Pump/Shaft/Vibration</th>
+                        <td>{{ ntc.NTCCk2Vibr }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #6 for Pump/Shaft/Vibration</th>
+                        <td>{{ ntc.NTCCk6Vibr }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #7 for Pump/Shaft/Vibration</th>
+                        <td>{{ ntc.NTCCk7Vibr }}</td>
+                    </tr>
+                    <tr>
+                        <th>ChecK #1 for Motor/Vibration</th>
+                        <td>{{ ntc.NTCCk1MotorVib }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #2 for Motor/Vibration</th>
+                        <td>{{ ntc.NTCCk2MotorVib }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #6 for Motor/Vibration</th>
+                        <td>{{ ntc.NTCCk6MotorVib }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check #7 for Motor/Vibration</th>
+                        <td>{{ ntc.NTCCk7MotorVib }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check Sump Pumps</th>
+                        <td>{{ ntc.NTCCkSumpPump }}</td>
+                    </tr>
+                    <tr>
+                        <th>Record #1 Motor - Hz</th>
+                        <td>{{ ntc.NTCRecordM1 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Record #2 Motor - Hz</th>
+                        <td>{{ ntc.NTCRecordM2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Record #6 Motor - Hz</th>
+                        <td>{{ ntc.NTCRecordM6 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Record #7 Motor - Hz</th>
+                        <td>{{ ntc.NTCRecordM7 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check Exhaust Fans</th>
+                        <td>{{ ntc.NTCCkExhFans }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check Heater during Winter Months</th>
+                        <td>{{ ntc.NTCCkHeaterWinter }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check Emergency Lighting</th>
+                        <td>{{ ntc.NTCCkEmergLight }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider" colspan="2">Rake Room / Bar Screen</th>
+                    </tr>
+                    <tr>
+                        <th>CONTROL POWER ON</th>
+                        <td>{{ ntc.NTCCntrlPnl }}</td>
+                    </tr>
+                    <tr>
+                        <th>SCREEN RUNNING</th>
+                        <td>{{ ntc.NTCScrnRun }}</td>
+                    </tr>
+                    <tr>
+                        <th>SCREEN LOCAL/AUTO/OFF</th>
+                        <td>{{ ntc.NTCScrnLAO }}</td>
+                    </tr>
+                    <tr>
+                        <th>PRESS RUNNING</th>
+                        <td>{{ ntc.NTCPrsRun }}</td>
+                    </tr>
+                    <tr>
+                        <th>PRESS HAND/OFF/AUTO</th>
+                        <td>{{ ntc.NTCPrsHOA }}</td>
+                    </tr>
+                    <tr>
+                        <th>PAN WASH HAND/OFF AUTO</th>
+                        <td>{{ ntc.NTCPanHOA }}</td>
+                    </tr>
+                    <tr>
+                        <th>P. ZONE WASH HAND/OFF AUTO</th>
+                        <td>{{ ntc.NTCPZoneHOA }}</td>
+                    </tr>
+                    <tr>
+                        <th>HOP. WASH HAND/OFF/AUTO</th>
+                        <td>{{ ntc.NTCHopWash }}</td>
+                    </tr>
+                    <tr>
+                        <th>RAKE UPSTREAM (FT)</th>
+                        <td>{{ ntc.NTCRakeU }}</td>
+                    </tr>
+                    <tr>
+                        <th>RAKE DOWNSTREAM (FT)</th>
+                        <td>{{ ntc.NTCRakeD }}</td>
+                    </tr>
+                    <tr>
+                        <th>SCREEN FAULT</th>
+                        <td>{{ ntc.NTCScrnFault }}</td>
+                    </tr>
+                    <tr>
+                        <th>PRESS FAULT</th>
+                        <td>{{ ntc.NTCPressFault }}</td>
+                    </tr>
+                    <tr>
+                        <th>HIGH LEVEL</th>
+                        <td>{{ ntc.NTCHighLevel }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">Time</th>
+                        <td class="top-divider">{{ ntc.NTCTime2 }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider" colspan="2">RTU COMMUNICATION</th>
+                    </tr>
+                    <tr>
+                        <th>DRY WELL ALARM</th>
+                        <td>{{ ntc.NTCDryWellAlarm }}</td>
+                    </tr>
+                    <tr>
+                        <th>WET WELL LEVEL - HYDRORANGER</th>
+                        <td>{{ ntc.NTCWWHydro2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>WET WELL LEVEL - PT XMETER</th>
+                        <td>{{ ntc.NTCWWXMeter2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>24" MAIN VALVE (MGD)</th>
+                        <td>{{ ntc.NTC24MGD }}</td>
+                    </tr>
+                    <tr>
+                        <th>36" MAIN VALVE (MDG)</th>
+                        <td>{{ ntc.NTC36MDG }}</td>
+                    </tr>
+                    <tr>
+                        <th>PUMPS CURRENTLY RUNNING</th>
+                        <td>{{ ntc.NTCPumpRun }}</td>
+                    </tr>
+                    <tr>
+                        <th>CHECK TREND SCREEN</th>
+                        <td>{{ ntc.NTCCkTrendScrn }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider" colspan="2">TIMBER CREEK VALVE CONTROL</th>
+                    </tr>
+                    <tr>
+                        <th>24" MAIN VALVE AUTO/MANUAL</th>
+                        <td>{{ ntc.NTC24Main }}</td>
+                    </tr>
+                    <tr>
+                        <th>36" MAIN VALVE AUTO/MANUAL</th>
+                        <td>{{ ntc.NTC36Main }}</td>
+                    </tr>
+                    <tr>
+                        <th>24" VALVE STATUS OPEN/CLOSED</th>
+                        <td>{{ ntc.NTC24Valve }}</td>
+                    </tr>
+                    <tr>
+                        <th>36" VALVE STATUS OPEN/CLOSED</th>
+                        <td>{{ ntc.NTC36Valve }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-subtitle top-divider">RKI GAS DETECTOR</th>
+                        <tH class="table-subtitle top-divider">CHECK LEVELS BEFORE
+                            <br> ENTERING DRY WELL</td>
+                    </tr>
+                    <tr>
+                        <th>Hydrogen Sulfide (ALARMS AT 10PPM)</th>
+                        <td>{{ ntc.NTCHydrogen }}</td>
+                    </tr>
+                    <tr>
+                        <th>Methane (ALARMS AT 10%LEL)</th>
+                        <td>{{ ntc.NTCMethane }}</td>
+                    </tr>
+                    <tr>
+                        <th>Oxygen (ALARMS AT 19.4 OR 23.6)</th>
+                        <td>{{ ntc.NTCOxygen }}</td>
+                    </tr>
+                    <tr>
+                        <th>DID YOU ENTER THE DRY WELL?</th>
+                        <td>{{ ntc.NTCEntry }}</td>
+                    </tr>
+                    <tr>
+                        <th class="top-divider">NOTES</th>
+                        <td class="notes top-divider" colspan="2">{{ ntc.NTCNotes }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <button id="fab"><i class="fa fa-print"></i></button>
+    <button id="fab2"><i class="fa fa-chevron-up" aria-hidden="true"></i></button>
+    <!-- source code -->
+    <script type="text/javascript" src="app.js?7"></script>
+</body>

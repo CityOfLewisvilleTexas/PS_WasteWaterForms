@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Title</title><!-- Reference jquery library -->
+		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <!-- Links to a bootstrap style sheet -->
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" media="print" href="../print.css" />
+    <!-- Vue.js library -->
+    <script src="https://unpkg.com/vue@2.2.6/dist/vue.min.js"></script>
+    <script src="http://momentjs.com/downloads/moment.min.js"></script>
+    <style media="screen">
+      .main-card {
+        background: #fff;
+        border-radius: 2px;
+        margin: 1rem auto;
+        margin-bottom: 24px;
+        border: 1px lightgray solid;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+        padding: 16px;
+        text-align: left;
+        max-width: 1150px;
+        width: 95%;
+        height: 100%;
+        padding-left: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid main-card" id="app">
+      <h4 class="text-center">City of Lewisville - Wastewater Effluent - {{ months[month] }} - {{ year }} </h4>
+      <table class="table table-fixed table-bordered table-condensed">
+        <thead>
+          <tr>
+            <th rowspan="2">Date</th>
+            <th rowspan="2">Castle Hills</th>
+            <th colspan="3">Hidden Cove</th>
+            <th rowspan="2">Scotties Point</th>
+            <th colspan="4">Vista Ridge</th>
+            <th rowspan="2">Whippoorwill</th>
+            <th rowspan="2">Time</th>
+            <th rowspan="2">Operator</th>
+          </tr>
+          <tr>
+            <th>Pump #1</th>
+            <th>Pump #2</th>
+            <th>Total</th>
+            <th>Pump #1</th>
+            <th>Pump #2</th>
+            <th>Pump #3</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(date, index) in data">
+            <td>{{ date.day.get('date') }}</td>
+            <td>{{ date.castlehills_flow }}</td>
+            <td>{{ date.hiddencove_pump1 }}</td>
+            <td>{{ date.hiddencove_pump2 }}</td>
+            <td>{{ date.hiddencove_total }}</td>
+            <td>{{ date.scottiespoint_flow }}</td>
+            <td>{{ date.vistaridge_pump1 }}</td>
+            <td>{{ date.vistaridge_pump2 }}</td>
+            <td>{{ date.vistaridge_pump3 }}</td>
+            <td>{{ date.vistaridge_total }}</td>
+            <td>{{ date.wip_flow }}</td>
+            <td>{{ date._time }}</td>
+            <td>{{ operator(index) }}</td>
+          </tr>
+          <tr v-if="!loading">
+            <td>Total</td>
+            <td>{{ total.castlehills_flow }}</td>
+            <td>{{ total.hiddencove_pump1 }}</td>
+            <td>{{ total.hiddencove_pump2 }}</td>
+            <td>{{ total.hiddencove_total }}</td>
+            <td>{{ total.scottiespoint_flow }}</td>
+            <td>{{ total.vistaridge_pump1 }}</td>
+            <td>{{ total.vistaridge_pump2 }}</td>
+            <td>{{ total.vistaridge_pump3 }}</td>
+            <td>{{ total.vistaridge_total }}</td>
+            <td>{{ total.wip_flow }}</td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr v-if="!loading">
+            <td>Avg</td>
+            <td>{{ avg.castlehills_flow }}</td>
+            <td>{{ avg.hiddencove_pump1 }}</td>
+            <td>{{ avg.hiddencove_pump2 }}</td>
+            <td>{{ avg.hiddencove_total }}</td>
+            <td>{{ avg.scottiespoint_flow }}</td>
+            <td>{{ avg.vistaridge_pump1 }}</td>
+            <td>{{ avg.vistaridge_pump2 }}</td>
+            <td>{{ avg.vistaridge_pump3 }}</td>
+            <td>{{ avg.vistaridge_total }}</td>
+            <td>{{ avg.wip_flow }}</td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <script src="./main.js"></script>
+  </body>
+</html>
