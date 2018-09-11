@@ -3,13 +3,17 @@
   <head>
     <meta charset="utf-8">
     <title>Equipment Report</title><!-- Reference jquery library -->
-		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+		<!-- <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script> -->
     <!-- Links to a bootstrap style sheet -->
-		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="https://unpkg.com/vuetify/dist/vuetify.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
     <link rel="stylesheet" type="text/css" media="print" href="../print.css" />
     <!-- Vue.js library -->
-    <script src="https://unpkg.com/vue@2.2.6/dist/vue.min.js"></script>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vuetify/dist/vuetify.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+
     <style media="screen">
       .main-card {
         background: #fff;
@@ -28,10 +32,141 @@
     </style>
   </head>
   <body>
-    <div class="container-fluid main-card" id="app">
-      <h4 class="text-center">Equipment Report</h4>
 
-    </div>
+        <v-app id="app">
+          
+          <!-- /////////////////////////////////////////// -->
+          <!-- //             Top navbar                // -->
+          <!-- /////////////////////////////////////////// -->
+          <v-toolbar color="indigo" dark fixed app>
+            <v-toolbar-title>Equipment Report</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-toolbar-items class="hidden-sm-and-down">
+                <v-flex xs12 sm6 md6>
+                  <!-- /////////////////////////////////////////// -->
+                  <!-- //             Equipment Picker          // -->
+                  <!-- /////////////////////////////////////////// -->
+                  <v-menu offset-y>
+                    <v-text-field
+                      slot="activator"
+                      v-model="col"
+                      label="Equipment"
+                      prepend-icon="build"
+                      readonly
+                    ></v-text-field>
+                    <v-list>
+                      <v-list-tile
+                        v-for="(item, index) in dropdown"
+                        :key="index"
+                        @click="col=item.value"
+                      >
+                        <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+                      </v-list-tile>
+                    </v-list>
+                  </v-menu>
+                </v-flex>
+              <v-flex xs12 sm6 md6>
+                <!-- /////////////////////////////////////////// -->
+                <!-- //            Datepickers                // -->
+                <!-- /////////////////////////////////////////// -->
+                <v-menu
+                  ref="menu1"
+                  :close-on-content-click="false"
+                  v-model="menu1"
+                  :nudge-right="40"
+                  lazy
+                  transition="scale-transition"
+                  offset-y
+                  full-width
+                  min-width="290px"
+                >
+                  <v-text-field
+                    slot="activator"
+                    v-model="computedDateStartFormatted"
+                    label="Start"
+                    prepend-icon="event"
+                    
+                    readonly
+                  ></v-text-field>
+                  <v-date-picker v-model="start" no-title @input="menu1 = false"></v-date-picker>
+                </v-menu>
+              </v-flex>
+              <v-flex xs12 sm6 md6>
+                <v-menu
+                  ref="menu2"
+                  :close-on-content-click="false"
+                  v-model="menu2"
+                  :nudge-right="40"
+                  lazy
+                  transition="scale-transition"
+                  offset-y
+                  full-width
+                  min-width="290px"
+                >
+                  <v-text-field
+                    slot="activator"
+                    v-model="computedDateEndFormatted"
+                    label="End"
+                    prepend-icon="event"
+                    readonly
+                  ></v-text-field>
+                  <v-date-picker v-model="end" no-title  @input="menu2 = false"></v-date-picker>
+                </v-menu>
+              </v-flex>
+            </v-toolbar-items>
+            
+            <v-btn icon @click="fetchData">
+              <v-icon>search</v-icon>
+            </v-btn>
+          </v-toolbar>
+          <v-content>
+            <!-- /////////////////////////////////////////// -->
+            <!-- //             Content                   // -->
+            <!-- /////////////////////////////////////////// -->
+            <v-container fluid fill-height>
+              <v-layout
+                justify-center
+                align-center
+              >
+                <v-flex text-xs-center v-if="!loading">
+
+                  <h2 v-if="col !== null" class="text-lg-left">{{ dropdown.filter(function(equ) { return equ.value === col })[0].title }}</h2>
+
+
+                  <!-- /////////////////////////////////////////// -->
+                  <!-- //             Table                     // -->
+                  <!-- /////////////////////////////////////////// -->
+                  <v-data-table
+                    :headers="headers"
+                    :items="rows"
+                    hide-actions
+                    class="elevation-1"
+                    :loading="loading"
+                  >
+                    <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
+                    <template slot="items" slot-scope="props">
+                      <td v-for="header, index in columns">
+                        <v-checkbox v-if="props.item[header].type === 'checkbox'" :input-value="props.item[header].value" value></v-checkbox>
+                        <div v-else-if="props.item[header].value">{{ props.item[header].value }}</div>
+                        <div v-else-if="props.item[header].value === ''">{{ props.item[header].value }}</div>
+                        <div v-else>{{ props.item[header] }}</div>
+                      </td>
+                      
+                    </template>
+                  </v-data-table>
+
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-content>
+          <!-- /////////////////////////////////////////// -->
+          <!-- //             Footer                    // -->
+          <!-- /////////////////////////////////////////// -->
+          <v-footer color="indigo" app inset>
+            
+          </v-footer>
+        </v-app>
+
     <script src="./main.js"></script>
   </body>
 </html>
