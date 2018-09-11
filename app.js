@@ -659,6 +659,7 @@ var app = new Vue({
             var baseHistorical = 'http://eservices.cityoflewisville.com/psofia/historysearch/default.aspx?dept=1';
             var baseSearch = 'http://eservices.cityoflewisville.com/WastewaterForms/viewControlPanelWorksheet/';
             var baseNewConfine = 'http://eservices.cityoflewisville.com/psofia/utilities/confinedspacereport/';
+            var baseEquipReport = 'http://eservices.cityoflewisville.com/WastewaterForms/EquipmentReport/'
             // build panel options
             this.addPanelOption({ newLink: '', editLink: baseHistorical, searchLink: '', displayText: 'Historical Form Search' });
             this.addPanelOption({ newLink: baseNew + '2', editLink: baseEdit + '2', searchLink: '', displayText: 'Plant Report' });
@@ -666,6 +667,7 @@ var app = new Vue({
             this.addPanelOption({ newLink: baseNew + '47', editLink: baseEdit + '47', searchLink: baseSearch, displayText: 'Control Panel Worksheet' });
             this.addPanelOption({ newLink: baseNew + '1', editLink: baseEdit + '1', searchLink: '', displayText: 'OperationsReport' });
             this.addPanelOption({ newLink: baseNew + '81', editLink: baseEdit + '81', searchLink: '', displayText: 'Lift Station Effluent' });
+            this.addPanelOption({ newLink: '', editLink: baseEquipReport, searchLink: '', displayText: 'Equipment Report' });
             this.addPanelOption({ newLink: baseNewConfine, editLink: baseEdit + '46', searchLink: '', displayText: 'Confined Space' });
 
             $('#panel-list').append('<p style="font-weight: bold">Lift Stations</p>');
