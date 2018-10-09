@@ -17,6 +17,8 @@ var app = new Vue({
     rows: [],
     dropdown: [
       // Add new equipment entries here.
+      { title: 'DO Readings', value: 'doread' },
+      { title: 'Clarifier Blankets', value: 'clarify' },
       { title: 'PC Pumps', value: 'pcpumps' },
       { title: 'Fine Screens', value: 'finescreens' },
       { title: 'BTF Control Panel', value: 'btf' },
